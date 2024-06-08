@@ -7,6 +7,7 @@ const ulTarefas = document.querySelector('.app__section-task-list')
 const paragrafoDescricaoTarefa = document.querySelector('.app__section-active-task-description')
 
 const btnRemoverConcluidas = document.querySelector('#btn-remover-concluidas')
+const btnRemoverTodas = document.querySelector('#btn-remover-todas')
 
 let tarefas = JSON.parse(localStorage.getItem('tarefas')) || []
 
@@ -139,13 +140,19 @@ document.addEventListener('FocoFinalizado', () => {
     }
 })
 
-//botão de remover as tarefas concluidas
-btnRemoverConcluidas.onclick = () => {
-    const seletor = ".app__section-task-list-item-complete"
+//remover as tarefas concluidas ou todas as tarefas
+const removerTarefas = (somenteCompletas) => {
+    const seletor = somenteCompletas ? ".app__section-task-list-item-complete" : ".app__section-task-list-item"
     document.querySelectorAll(seletor).forEach(elemento => {
         elemento.remove()
     })
-    //filtrando todos os elementos que não estão completos, e atualizando a lista de tarefas com esses elementos
-    tarefas = tarefas.filter(tarefa => !tarefa.completa)
+    //filtrando todos os elementos que não estão completos, e atualizando a lista de tarefas com esses elementos, ou excluindo tudo se não for somente tarefas completas
+    tarefas = somenteCompletas ? tarefas.filter(tarefa => !tarefa.completa) : []
     atualizarTarefas()
 }
+
+//botão de remover as tarefas concluidas
+btnRemoverConcluidas.onclick = () => removerTarefas(true)
+
+//botão de remover todas as tarefas
+btnRemoverTodas.onclick = () => removerTarefas(false)
